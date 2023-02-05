@@ -1,5 +1,7 @@
 ---
-title: "R Notebook"
+title: "CUNY DATA608 Assignment 1"
+author: "Michael Ippolito"
+date: '2023-02-05'
 output:
   html_document: default
   html_notebook: default
