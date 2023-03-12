@@ -104,50 +104,80 @@ Lets dig in on the state with the 3rd most companies in the data set. Imagine yo
 Two options are shown. First, an ordinary box plot, which shows the inter-quantile range, median, and outliers, but which doesn't show the distribution of values.
 
 
-```{r}
+```{r fig.width=8, fig.height=10}
 
 # Filter out NY companies, only using complete observations
 inc_ny <- inc[complete.cases(inc),]
 inc_ny <- inc[inc$State=='NY',]
 
 # Boxplot
+#inc_ny %>%
+#    ggplot(aes(x='', y=Employees)) +
+#    geom_boxplot(width=0.75, color='black', fill='magenta4') +
+#    stat_summary(fun='mean', geom='point', shape=20, size=5, color='grey', fill='grey') +
+#    scale_y_continuous(trans='log', breaks=c(10, 100, 1000, 10000)) +
+#    theme_minimal() +
+#    ggtitle('New York Company Employee Counts') +
+#    ylab('Employees (log scale)') + xlab('') +
+#    theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+#    theme(legend.position='right') +
+#    geom_point(aes(shape='mean'), alpha=0) +
+#    guides(shape=guide_legend(title=NULL, override.aes=list(alpha=1, color='grey', size=5, shape=20)))
+
+# Boxplot
 inc_ny %>%
-    ggplot(aes(x='', y=Employees)) +
+    ggplot(aes(x=reorder(Industry, desc(Industry)), y=Employees)) +
     geom_boxplot(width=0.75, color='black', fill='magenta4') +
     stat_summary(fun='mean', geom='point', shape=20, size=5, color='grey', fill='grey') +
     scale_y_continuous(trans='log', breaks=c(10, 100, 1000, 10000)) +
     theme_minimal() +
     ggtitle('New York Company Employee Counts') +
-    ylab('Employees (log scale)') + xlab('') +
-    theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+    ylab('Employees (log scale)') + xlab('Industry') +
+    #theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
     theme(legend.position='right') +
     geom_point(aes(shape='mean'), alpha=0) +
-    guides(shape=guide_legend(title=NULL, override.aes=list(alpha=1, color='grey', size=5, shape=20)))
+    guides(shape=guide_legend(title=NULL, override.aes=list(alpha=1, color='grey', size=5, shape=20))) +
+    coord_flip()
 
 ```
 
 The second figure includes a violin plot overlain onto the box plot which shows the distribution. The violin has the disadvantage that the outliers have to be added manually using geom_point().
 
 
-```{r}
+```{r fig.width=8, fig.height=10}
 
 # Outlier detection
 out_lo <- quantile(inc_ny$Employees, probs=c(0.25)) - (1.5 * IQR(inc_ny$Employees))
 out_hi <- quantile(inc_ny$Employees, probs=c(0.75)) + (1.5 * IQR(inc_ny$Employees))
 
 # Violin plot
+#inc_ny %>%
+#    ggplot(aes(x='', y=Employees)) +
+#    geom_violin(color='black', fill='magenta4', draw_quantiles=c(0.25, 0.5, 0.75)) +
+#    geom_point(data=inc_ny[inc_ny$Employees > out_hi | inc_ny$Employees < out_lo,]) +
+#    stat_summary(fun='mean', geom='point', shape=20, size=5, color='grey', fill='grey') +
+#    scale_y_continuous(trans='log', breaks=c(10, 100, 1000, 10000)) +
+#    theme_minimal() +
+#    ggtitle('New York Company Employee Counts') +
+#    ylab('Employees (log scale)') + xlab('') +
+#    theme(legend.position='right') +
+#    geom_point(aes(shape='mean'), alpha=0) +
+#    guides(shape=guide_legend(title=NULL, override.aes=list(alpha=1, color='grey', size=5, shape=20)))
+
+# Violin plot
 inc_ny %>%
-    ggplot(aes(x='', y=Employees)) +
+    ggplot(aes(x=reorder(Industry, desc(Industry)), y=Employees)) +
     geom_violin(color='black', fill='magenta4', draw_quantiles=c(0.25, 0.5, 0.75)) +
     geom_point(data=inc_ny[inc_ny$Employees > out_hi | inc_ny$Employees < out_lo,]) +
     stat_summary(fun='mean', geom='point', shape=20, size=5, color='grey', fill='grey') +
     scale_y_continuous(trans='log', breaks=c(10, 100, 1000, 10000)) +
     theme_minimal() +
     ggtitle('New York Company Employee Counts') +
-    ylab('Employees (log scale)') + xlab('') +
+    ylab('Employees (log scale)') + xlab('Industry') +
     theme(legend.position='right') +
     geom_point(aes(shape='mean'), alpha=0) +
-    guides(shape=guide_legend(title=NULL, override.aes=list(alpha=1, color='grey', size=5, shape=20)))
+    guides(shape=guide_legend(title=NULL, override.aes=list(alpha=1, color='grey', size=5, shape=20))) +
+    coord_flip()
 
 ```
 
